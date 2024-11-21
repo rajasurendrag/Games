@@ -1,0 +1,175 @@
+function rollDice() {
+  return Math.floor(Math.random() * 6) + 1;
+}
+
+function snakes(score) {
+  switch (score) {
+    case 28:
+      return 10;
+    case 37:
+      return 3;
+    case 48:
+      return 16;
+    case 75:
+      return 32;
+    case 94:
+      return 71;
+    case 96:
+      return 42;
+    default:
+      return score;
+  }
+}
+
+function getNumber(dice) {
+  const numberString = "0️⃣1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣";
+  dice = dice * 3;
+
+  return numberString[dice] + numberString[dice + 1] + numberString[dice + 2];
+}
+
+function ladders(score) {
+  switch (score) {
+    case 4:
+      return 56;
+    case 12:
+      return 50;
+    case 14:
+      return 55;
+    case 22:
+      return 58;
+    case 41:
+      return 79;
+    case 54:
+      return 88;
+    default:
+      return score;
+  }
+}
+
+function play() {
+  const playerOneName = prompt("enter playerOne name : ");
+  const playerTwoName = prompt("enter playerTwo name : ");
+
+  let playerOneScore = 0;
+  let playerTwoScore = 0;
+
+  console.log("----------ENjoY PlAYinG SNakE 🐍  &  LaDDeRS 🪜----------");
+
+  return __play(playerOneName, playerTwoName, +playerOneScore, +playerTwoScore);
+}
+
+function __play(playerOne, playerTwo, playerOneScore, playerTwoScore) {
+  if (playerOneScore === 100 || playerTwoScore === 100) {
+    const P1 = playerOne;
+    const P2 = playerTwo;
+
+    return playerOneScore === 100 ? printEndResult(P1, P2) : printEndResult(P2, P1);
+  }
+
+  playerOneScore = getPlayerOneScore(+playerOneScore, playerOne);
+
+  printResult(playerOne, playerOneScore, playerTwo, playerTwoScore);
+
+  playerTwoScore = getPlayerTwoScore(+playerTwoScore, playerTwo);
+
+  printResult(playerOne, playerOneScore, playerTwo, playerTwoScore);
+
+  return __play(playerOne, playerTwo, +playerOneScore, +playerTwoScore);
+}
+
+function getPlayerOneScore(playerOneScore, playerOne) {
+  prompt(playerOne + " click EnTeR to roll dice 🎲 ", '');
+
+  const score = isValidScore(+rollDice(), +playerOneScore);
+
+  if (isNaN(score)) {
+    return isScoreExceeding(+playerOneScore);
+  }
+
+  return setPlayerScore(+playerOneScore, score, playerOne);
+}
+
+function getPlayerTwoScore(playerTwoScore, playerTwo) {
+  prompt(playerTwo + " click enter to roll dice 🎲 ", '');
+
+  const score = isValidScore(rollDice(), +playerTwoScore);
+
+  if (isNaN(score)) {
+    return isScoreExceeding(+playerTwoScore);
+  }
+
+  return setPlayerScore(+playerTwoScore, score, playerTwo);
+}
+
+function isValidScore(dice, playerScore) {
+  console.log();
+
+  if (playerScore + dice <= 100) {
+    return dice;
+  }
+
+  return NaN;
+}
+
+function isScoreExceeding(playerScore) {
+  const neddedScore = 100 - playerScore;
+
+  console.log("SCorE Is EXcEEDinG, RoLL DiCE To " + neddedScore + " To WiN\n");
+
+  return +playerScore;
+}
+
+function setPlayerScore(playerScore, diceScore, playerName) {
+  playerScore += diceScore;
+  playerScore = isSnakeEncountered(playerScore, playerName);
+  playerScore = isLadderEncountered(playerScore, playerName);
+
+  console.log(playerName + " RoLLeD DiCE 🎲 To : " + getNumber(diceScore) + "\n");
+
+  return playerScore;
+}
+
+function isSnakeEncountered(playerScore, playerName) {
+  const position = playerScore;
+
+  playerScore = snakes(playerScore, playerName);
+
+  if (position !== playerScore) {
+    console.log(playerName + " YoU ARe BiTTeN By A SNaKe 🐍\n");
+    console.log("SNakE sent " + playerName + " BacK To : " + playerScore + "\n");
+  }
+
+  return playerScore;
+}
+
+function isLadderEncountered(playerScore, scoreBeforeSnakes, playerName) {
+  const position = playerScore;
+
+  playerScore = ladders(playerScore, playerName);
+
+  if (position !== playerScore) {
+    console.log(playerName + " YoU F0uND A LaDDeR YaHHoO.. 🪜\n");
+    console.log("LaDDeR HeLPeD " + playerName + " To JuMp To: " + playerScore + "\n");
+  }
+
+  return playerScore;
+}
+
+function printResult(playerOne, playerOneScore, playerTwo, playerTwoScore) {
+  let result = "--------->  " + playerOne + " PoSItIon Is At ";
+  result += playerOneScore;
+  result += " | " + playerTwo + " PoSItIon Is At " + playerTwoScore;
+
+  console.log(result);
+  console.log("\n--------------------------------------------------------");
+}
+
+function printEndResult(winner, looser) {
+  let result = "\n    " + winner + "  WoN ThE GaME 🥳 \n";
+  result += "\n    " + looser + " LOsE 🥲\n";
+
+  return result + "\n👉   THanKs FoR PlaYIng 🤗   👈"
+}
+
+console.log(play());
